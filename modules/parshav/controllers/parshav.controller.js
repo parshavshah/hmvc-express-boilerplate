@@ -3,8 +3,8 @@ const sendResponse = require("../../../helper/responseHelper.js").sendResponse;
 const validate = require("../../../helper/validationHelper").validate;
 const getValue = require("../../../helper/constantHelper").getValue;
 
-const blueprintModel = require("../models/blueprint.model.js");
-const { createBlueprint, updateBlueprint } = require("../validations/blueprint.validation");
+const parshavModel = require("../models/parshav.model.js");
+const { createParshav, updateParshav } = require("../validations/parshav.validation");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const moduleName = path.resolve(__dirname, "..").split(path.sep).reverse()[0].toUpperCase();
@@ -14,10 +14,10 @@ exports.create = async (req, res) => {
     const body = req.body;
 
     // validation
-    await validate(res, createBlueprint, body, `${moduleName}_CREATE`);
+    await validate(res, createParshav, body, `${moduleName}_CREATE`);
 
     // database process
-    const dbRespnse = await blueprintModel.create(body);
+    const dbRespnse = await parshavModel.create(body);
 
     // send response
     sendResponse(res, dbRespnse, `${moduleName}_CREATE_SUCCESS`, 200);
@@ -31,13 +31,13 @@ exports.read = async (req, res) => {
     const queryId = req.params.id;
 
     // check id exists
-    const isExists = await blueprintModel.countDocuments({ _id: ObjectId(queryId) });
+    const isExists = await parshavModel.countDocuments({ _id: ObjectId(queryId) });
     if (!isExists) {
       throw new Error(`${moduleName}_RECORD_NOT_EXISTS`);
     }
 
     // database process
-    const dbRespnse = await blueprintModel.findOne({ _id: queryId });
+    const dbRespnse = await parshavModel.findOne({ _id: queryId });
 
     // send response
     sendResponse(res, dbRespnse, `${moduleName}_READ_SUCCESS`, 200);
@@ -52,16 +52,16 @@ exports.update = async (req, res) => {
     const body = req.body;
 
     // validation
-    await validate(res, updateBlueprint, body, `${moduleName}_UPDATE`);
+    await validate(res, updateParshav, body, `${moduleName}_UPDATE`);
 
     // check id exists
-    const isExists = await blueprintModel.countDocuments({ _id: queryId });
+    const isExists = await parshavModel.countDocuments({ _id: queryId });
     if (!isExists) {
       throw new Error(`${moduleName}_RECORD_NOT_EXISTS`);
     }
 
     // database process
-    const dbRespnse = await blueprintModel.findOneAndUpdate({ _id: queryId }, body);
+    const dbRespnse = await parshavModel.findOneAndUpdate({ _id: queryId }, body);
 
     // send response
     sendResponse(res, dbRespnse, `${moduleName}_UPDATE_SUCCESS`, 200);
@@ -75,13 +75,13 @@ exports.delete = async (req, res) => {
     const queryId = ObjectId(req.params.id);
 
     // check id exists
-    const isExists = await blueprintModel.countDocuments({ _id: queryId });
+    const isExists = await parshavModel.countDocuments({ _id: queryId });
     if (!isExists) {
       throw new Error(`${moduleName}_RECORD_NOT_EXISTS`);
     }
 
     // database process
-    const dbRespnse = await blueprintModel.findOneAndUpdate({ _id: queryId }, { isDeleted: true });
+    const dbRespnse = await parshavModel.findOneAndUpdate({ _id: queryId }, { isDeleted: true });
 
     // send response
     sendResponse(res, dbRespnse, `${moduleName}_DELETE_SUCCESS`, 200);
@@ -96,13 +96,13 @@ exports.list = async (req, res) => {
     const pageNumber = req.query.pageNumber ? parseInt(req.query.pageNumber) : getValue("DEFAULT_PAGE_NUMBER");
 
     // database process
-    const dbRespnse = await blueprintModel
+    const dbRespnse = await parshavModel
       .find()
       .limit(pageSize)
       .skip(pageSize * pageNumber)
       .exec();
 
-    const recordCount = await blueprintModel.count();
+    const recordCount = await parshavModel.count();
 
     // send response
     sendResponse(res, dbRespnse, `${moduleName}_LIST_SUCCESS`, 200, {
